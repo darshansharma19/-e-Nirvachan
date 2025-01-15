@@ -1,0 +1,12 @@
+{
+    "election": {
+      "title": "Presidential Election 2025",
+      "description": "Choose your candidate for the presidential election."
+    },
+    "candidates": [
+      { "id": 1, "name": "Candidate A", "party": "Party A" },
+      { "id": 2, "name": "Candidate B", "party": "Party B" },
+      { "id": 3, "name": "Candidate C", "party": "Party C" }
+    ]
+  }
+  

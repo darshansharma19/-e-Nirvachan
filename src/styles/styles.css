@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add your custom styles here */
+body {
+  font-family: 'Inter', sans-serif; /* Example: Customize the default font */
+  background-color: #f9fafb; /* Example: Set a default background color */
+}
+
+button {
+  @apply px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600;
+  transition: background-color 0.2s ease;
+}
+
+.container {
+  @apply mx-auto p-4 max-w-4xl;
+}
