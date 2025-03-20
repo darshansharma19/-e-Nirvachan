@@ -5,6 +5,8 @@ const VoteForm = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [isMining, setIsMining] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
 
   useEffect(() => {
     fetch("/data/votingData.json")
@@ -17,19 +19,17 @@ const VoteForm = () => {
     e.preventDefault();
 
     if (!selectedCandidate) {
-      alert("Please select a candidate.");
+      setMessage("⚠️ Please select a candidate.");
+      setMessageType("error");
       return;
     }
 
     try {
-      // Submit the vote as a transaction
       const transactionResponse = await fetch("http://localhost:5000/transactions/new", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          voter_id: "voter123", // Replace with dynamic voter ID if available
+          voter_id: "voter123",
           candidate_id: selectedCandidate,
         }),
       });
@@ -38,35 +38,27 @@ const VoteForm = () => {
         throw new Error("Failed to submit vote.");
       }
 
-      const transactionResult = await transactionResponse.json();
-      console.log("Transaction submitted:", transactionResult.message);
-
-      // Start mining the block
       setIsMining(true);
       const mineResponse = await fetch("http://localhost:5000/mine", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          miner_address: "miner123", // Replace with dynamic miner address if available
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ miner_address: "miner123" }),
       });
 
       if (!mineResponse.ok) {
         throw new Error("Failed to mine a block.");
       }
 
-      const mineResult = await mineResponse.json();
-      console.log("Block mined:", mineResult.block);
-
-      alert(`Block successfully mined:\n${JSON.stringify(mineResult.block, null, 2)}`);
+      setMessage("✅ Your vote has been successfully recorded!");
+      setMessageType("success");
       setFormSubmitted(true);
     } catch (error) {
       console.error("Error during voting and mining process:", error);
-      alert("An error occurred. Please check the console for details.");
+      setMessage("❌ An error occurred. Please try again.");
+      setMessageType("error");
     } finally {
       setIsMining(false);
+      setTimeout(() => setMessage(""), 4000); // Hide message after 4s
     }
   };
 
@@ -75,38 +67,51 @@ const VoteForm = () => {
   }
 
   if (formSubmitted) {
-    return <h2>Thank you for voting! Your block has been mined.</h2>;
+    return <h2 className="text-green-600 font-bold text-2xl">✅ Thank you for voting!</h2>;
   }
 
   return (
-    <div className="vote-form-container">
-      <h1 className="text-3xl font-bold mb-4">{votingData.election.title}</h1>
+    <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg text-center mt-10 relative">
+      <h1 className="text-4xl font-bold text-blue-700 mb-4">{votingData.election.title}</h1>
       <p className="text-lg text-gray-600 mb-6">{votingData.election.description}</p>
+
+      {/* Notification Message */}
+      {message && (
+        <div
+          className={`absolute top-0 left-1/2 transform -translate-x-1/2 mt-2 px-6 py-3 rounded-lg text-white text-lg transition-all ${
+            messageType === "success" ? "bg-green-600" : "bg-red-600"
+          }`}
+        >
+          {message}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
-        <ul className="mb-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
           {votingData.candidates.map((candidate) => (
-            <li key={candidate.id} className="mb-2">
-              <label>
-                <input
-                  type="radio"
-                  name="candidate"
-                  value={candidate.id}
-                  onChange={() => setSelectedCandidate(candidate.id)}
-                  className="mr-2"
-                />
-                {candidate.name} ({candidate.party})
-              </label>
-            </li>
+            <label
+              key={candidate.id}
+              className={`p-4 border rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-all text-center ${
+                selectedCandidate === candidate.id ? "border-green-500 border-4" : "border-gray-300"
+              }`}
+              onClick={() => setSelectedCandidate(candidate.id)}
+            >
+              <input type="radio" name="candidate" value={candidate.id} className="hidden" />
+              <img src={candidate.image} alt={candidate.name} className="w-24 h-24 mx-auto rounded-full mb-2" />
+              <p className="text-lg font-semibold">{candidate.name}</p>
+              <p className="text-sm text-gray-500">({candidate.party})</p>
+            </label>
           ))}
-        </ul>
+        </div>
+
         <button
           type="submit"
-          className={`bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 ${
+          className={`bg-blue-600 text-white py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition ${
             isMining ? "opacity-50 cursor-not-allowed" : ""
           }`}
           disabled={isMining}
         >
-          {isMining ? "Mining Block..." : "Submit Vote"}
+          {isMining ? "Mining Block..." : "🗳️ Submit Vote"}
         </button>
       </form>
     </div>

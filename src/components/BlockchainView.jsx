@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 const BlockchainView = () => {
   const [blockchain, setBlockchain] = useState([]);
   const [votingData, setVotingData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchBlockchain();
@@ -27,53 +28,64 @@ const BlockchainView = () => {
       const response = await fetch("/data/votingData.json");
       const data = await response.json();
       setVotingData(data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching voting data:", error);
+      setLoading(false);
     }
   };
 
-  if (!votingData) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="blockchain-view-container">
-      <h1 className="text-3xl font-bold mb-4">Blockchain View</h1>
-      <div className="mt-6">
-        <h2 className="text-2xl font-semibold mb-2">Blockchain Data:</h2>
-        <ul className="list-disc pl-6">
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-4xl font-bold text-blue-600 mb-6 text-center">
+        Blockchain View
+      </h1>
+
+      {blockchain.length === 0 ? (
+        <p className="text-center text-gray-600">No blockchain data available.</p>
+      ) : (
+        <div className="grid gap-6">
           {blockchain.map((block) => (
-            <li key={block.index} className="mb-4">
-              <strong>Block #{block.index}</strong>
-              <pre className="bg-gray-100 p-2 rounded mt-1">
-                {JSON.stringify(
-                  {
-                    index: block.index,
-                    timestamp: block.timestamp,
-                    proof: block.proof,
-                    previous_hash: block.previous_hash,
-                  },
-                  null,
-                  2
-                )}
-              </pre>
-              <div className="mt-2">
-                <h3 className="text-xl font-semibold">Transactions:</h3>
-                <ul className="list-disc pl-6">
-                  {block.transactions.map((transaction, idx) => (
-                    <li key={idx}>
-                      Voter ID: {transaction.voter_id}, Candidate:{" "}
-                      {votingData.candidates.find(
-                        (c) => c.id === transaction.candidate_id
-                      )?.name || "Unknown"}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </li>
+            <div key={block.index} className="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+              <h2 className="text-2xl font-semibold mb-2 text-gray-800">Block #{block.index}</h2>
+              <p className="text-gray-600">
+                <strong>Timestamp:</strong> {new Date(block.timestamp * 1000).toLocaleString()}
+              </p>
+              <p className="text-gray-600">
+                <strong>Proof:</strong> {block.proof}
+              </p>
+              <p className="text-gray-600">
+                <strong>Previous Hash:</strong> {block.previous_hash}
+              </p>
+
+              {block.transactions.length > 0 ? (
+                <div className="mt-4">
+                  <h3 className="text-lg font-semibold text-blue-500">Transactions:</h3>
+                  <ul className="list-disc pl-6 mt-2">
+                    {block.transactions.map((transaction, idx) => (
+                      <li key={idx} className="text-gray-700">
+                        <strong>Voter ID:</strong> {transaction.voter_id} | 
+                        <strong> Candidate:</strong>{" "}
+                        {votingData?.candidates?.find((c) => c.id === transaction.candidate_id)?.name || "Unknown"}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="text-gray-500 mt-3">No transactions in this block.</p>
+              )}
+            </div>
           ))}
-        </ul>
-      </div>
+        </div>
+      )}
     </div>
   );
 };

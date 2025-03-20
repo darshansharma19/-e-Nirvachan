@@ -5,6 +5,7 @@ import Navigation from "./components/Navigation";
 import VoteForm from "./components/VoteForm";
 import BlockchainView from "./components/BlockchainView";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
+import VoterVerification from "./components/VoterVerification";
 import "./styles/tailwind.css";
 
 const App = () => (
@@ -15,6 +16,7 @@ const App = () => (
             <Route path="/vote" element={<VoteForm />} />
             <Route path="/blockchain" element={<BlockchainView />} />
             <Route path="/analytics" element={<AnalyticsDashboard />} />
+            <Route path="/VoterVerification" element={<VoterVerification />} />
         </Routes>
     </Router>
 );

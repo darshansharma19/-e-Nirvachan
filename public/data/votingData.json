@@ -1,12 +1,38 @@
 {
-    "election": {
-      "title": "Presidential Election 2025",
-      "description": "Choose your candidate for the presidential election."
+  "election": {
+    "title": "Lok Sabha Election 2025",
+    "description": "Vote for your preferred candidate in the upcoming General Elections."
+  },
+  "candidates": [
+    { 
+      "id": 1, 
+      "name": "Narendra Modi", 
+      "party": "Bharatiya Janata Party (BJP)", 
+      "image": "https://assets.telegraphindia.com/telegraph/2023/Jan/1673421821_modi.jpg"
     },
-    "candidates": [
-      { "id": 1, "name": "Candidate A", "party": "Party A" },
-      { "id": 2, "name": "Candidate B", "party": "Party B" },
-      { "id": 3, "name": "Candidate C", "party": "Party C" }
-    ]
-  }
-  
+    { 
+      "id": 2, 
+      "name": "Rahul Gandhi", 
+      "party": "Indian National Congress (INC)", 
+      "image": "https://tse1.mm.bing.net/th?id=OIP.A5YMpbSZF3-2CZMUVNK2NwHaHs&pid=Api&P=0&h=180"
+    },
+    { 
+      "id": 3, 
+      "name": "Arvind Kejriwal", 
+      "party": "Aam Aadmi Party (AAP)", 
+      "image": "https://tse2.mm.bing.net/th?id=OIP.OAeVpIHadXdRBPhzgo77NgHaEK&pid=Api&P=0&h=180"
+    },
+    { 
+      "id": 4, 
+      "name": "Mamata Banerjee", 
+      "party": "All India Trinamool Congress (AITC)", 
+      "image": "https://tse1.mm.bing.net/th?id=OIP.ejg0xpp8WHron2XFJN1iSwHaE4&pid=Api&P=0&h=180"
+    },
+    { 
+      "id": 5, 
+      "name": "Akhilesh Yadav", 
+      "party": "Samajwadi Party (SP)", 
+      "image": "https://tse3.mm.bing.net/th?id=OIP.3ZouYd7dtaLe9-wxSb72xwHaE-&pid=Api&P=0&h=180"
+    }
+  ]
+}
