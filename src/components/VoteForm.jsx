@@ -25,7 +25,7 @@ const VoteForm = () => {
     }
 
     try {
-      const transactionResponse = await fetch("http://localhost:5000/transactions/new", {
+      const transactionResponse = await fetch("https://e-nirvachan.onrender.com/transactions/new", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -39,7 +39,7 @@ const VoteForm = () => {
       }
 
       setIsMining(true);
-      const mineResponse = await fetch("http://localhost:5000/mine", {
+      const mineResponse = await fetch("https://e-nirvachan.onrender.com/mine", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ miner_address: "miner123" }),

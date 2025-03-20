@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000"; // Backend URL
+const BASE_URL = "https://e-nirvachan.onrender.com"; // Backend URL
 
 export const getBlockchain = async () => {
   try {

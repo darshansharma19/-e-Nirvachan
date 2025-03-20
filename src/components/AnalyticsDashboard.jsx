@@ -30,7 +30,7 @@ const AnalyticsDashboard = () => {
 
   const fetchBlockchain = async () => {
     try {
-      const response = await fetch("http://localhost:5000/chain");
+      const response = await fetch("https://e-nirvachan.onrender.com/chain");
       if (!response.ok) throw new Error("Failed to fetch blockchain data.");
       const data = await response.json();
       setBlockchain(data.chain);
