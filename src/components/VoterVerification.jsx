@@ -1,23 +1,41 @@
 import React, { useState } from "react";
+import { ethers } from "ethers";
 
 const VoterVerification = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [voterId, setVoterId] = useState("");
   const [error, setError] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
+
+  const connectWallet = async () => {
+    if (window.ethereum) {
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        setWalletAddress(address);
+        setIsConnected(true);
+      } catch (err) {
+        setError("Failed to connect wallet.");
+      }
+    } else {
+      setError("MetaMask or Phantom wallet not found.");
+    }
+  };
 
   const handleVerification = () => {
-    if (!walletAddress || !voterId) {
-      setError("Please enter both Wallet Address and Voter ID.");
+    const voterIdPattern = /^[A-Z]{3}[0-9]{7}$/;
+    if (!walletAddress || !voterId.match(voterIdPattern)) {
+      setError("Please enter a valid Wallet Address and Voter ID (Format: ABC1234567).");
       return;
     }
-
     setError("");
-    // Call API or Blockchain Verification Logic
     alert(`Verifying:\nWallet: ${walletAddress}\nVoter ID: ${voterId}`);
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 pt-20">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">
           Voter Verification
@@ -25,17 +43,17 @@ const VoterVerification = () => {
 
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-        {/* Wallet Address Input */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-semibold">Wallet Address:</label>
-          <input
-            type="text"
-            className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
-            placeholder="Enter your Wallet Address"
-            value={walletAddress}
-            onChange={(e) => setWalletAddress(e.target.value)}
-          />
-        </div>
+        {/* Connect Wallet Button */}
+        {!isConnected ? (
+          <button
+            onClick={connectWallet}
+            className="w-full bg-purple-600 text-white font-semibold py-2 rounded-md hover:bg-purple-700 transition mb-4"
+          >
+            Connect Wallet
+          </button>
+        ) : (
+          <p className="text-green-600 text-center mb-4">Wallet Connected: {walletAddress}</p>
+        )}
 
         {/* Voter ID Input */}
         <div className="mb-6">
@@ -43,7 +61,7 @@ const VoterVerification = () => {
           <input
             type="text"
             className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
-            placeholder="Enter your Voter ID"
+            placeholder="Enter your Voter ID (ABC1234567)"
             value={voterId}
             onChange={(e) => setVoterId(e.target.value)}
           />

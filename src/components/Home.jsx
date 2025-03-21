@@ -2,7 +2,7 @@ import React from "react";
 
 const Home = () => {
   return (
-    <div className="home-container text-center py-10 bg-gray-100 min-h-screen">
+    <div className="home-container text-center py-10 bg-gray-100 min-h-screen pt-20">
       <div className="max-w-5xl mx-auto p-8 bg-white shadow-xl rounded-lg">
         {/* Logo */}
         <img
